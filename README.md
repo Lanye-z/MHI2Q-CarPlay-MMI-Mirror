@@ -5,6 +5,13 @@
 >
 > **English:** Known issue: MMI Mirror sessions launched via **AutoStart** may go black after extended continuous use. Please prioritize driving safety. For long sessions, use manual **`Start MMI Mirror`** instead; this issue has not been observed with manual Start. If the display goes black while driving, do not operate the head unit until the vehicle is safely stopped.
 
+coming soon
+
+https://github.com/user-attachments/assets/d4c3c755-c8b9-4405-933a-43efdc7f8053
+
+
+
+
 # MIB2 Toolbox — CarPlay RGI + MMI Mirror
 
 [English](README_EN.md) | 简体中文
