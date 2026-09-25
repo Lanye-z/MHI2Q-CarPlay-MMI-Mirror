@@ -2,9 +2,9 @@
 
 简体中文
 
-本项目面向 Audi **MHI2Q / MIB2 High** 平台，用于将 MMI 中控画面实时镜像至 **Virtual Cockpit** 的地图显示区域，并通过 Green Engineering Menu / Toolbox 完成安装、启动、停止、更新、日志收集和卸载恢复。
+本项目面向 Audi **MHI2Q** 平台，用于将 MMI 中控画面实时镜像至 **Virtual Cockpit** 的地图显示区域，并通过 Green Engineering Menu / Toolbox 完成安装、启动、停止、更新、日志收集和卸载恢复。
 
-当前 **main** 为 **V2.4.1 无源码安装版**，已完成实车验证，作为当前推荐稳定版本。
+当前 **main** 已完成实车验证，作为当前推荐稳定版本。
 
 > [!IMPORTANT]
 > 本项目会修改车机系统文件。安装、更新或卸载过程中请保持 SD 卡连接和车机供电稳定。  
@@ -14,9 +14,6 @@
 
 ---
 
-## 当前版本
-
-### V2.4.1
 
 当前版本主要特性：
 
@@ -25,12 +22,9 @@
 - 支持 **Full / Small** 地图区域变化。
 - 根据不同仪表状态动态调整镜像显示区域。
 - 支持源画面 Crop、Scale、Offset 与自然边缘裁切。
-- 启动 Logo 按当前 MMI Mirror 显示区域呈现，不再铺满整个仪表画面。
-- 运行过程中显示半透明水印 **“免费开源，禁止倒卖”**。
-- 水印会在当前可见镜像区域内动态漂移。
 - Classic / Sport、Full / Small 切换后，水印活动区域会随新的镜像位置和裁切区域重新计算。
 - 支持手动启动 / 停止。
-- 支持 AutoStart 自动启动。
+- 支持 AutoStart 自动启动：当 CarPlay 启动并进入可用状态后，MMI Mirror 会自动启动镜像
 - 支持旧版本直接覆盖更新。
 - 支持日志收集和完整卸载。
 
@@ -86,8 +80,6 @@ SD CARD
     └── Toolbox
 ~~~
 
-本 main 为纯安装版，不包含 MMI Mirror C/C++ 源码、QNX 编译工程、开发测试目录或编译脚本。
-
 ---
 
 # 安装与使用
@@ -138,7 +130,7 @@ MMI Mirror
 | Install/Update MMI Mirror | 首次安装或覆盖更新 MMI Mirror |
 | Start MMI Mirror | 手动启动 MMI Mirror |
 | Stop MMI Mirror | 停止当前 MMI Mirror 会话 |
-| AutoStart ON - start after MMI boot | 开启开机自动启动 |
+| AutoStart ON - start after MMI boot | 开启自动启动：CarPlay 启动后自动开启 MMI Mirror。 |
 | AutoStart OFF - manual start only | 关闭后续自动启动 |
 | Copy MMI Mirror diagnostics to SD-card | 将诊断日志复制到 SD 卡 |
 | Clear temporary MMI Mirror logs | 清理临时运行日志 |
@@ -353,7 +345,7 @@ AutoStart OFF - manual start only
 
 需要注意：
 
-AutoStart OFF 只是禁止**下一次开机自动启动**。
+AutoStart OFF 只是**从下一次开机开始禁止自动启动**。
 
 如果当前 MMI Mirror 已经运行，它不会自动停止当前会话。如需立即停止，请另外执行：
 
@@ -500,8 +492,7 @@ Backup/<VERSION>/MMIMirror/
 ~~~text
 main
 └── V2.4.1
-    ├── 实车验证完成
-    └── 无源码安装版
+    └── 实车验证完成
 ~~~
 
 旧版备份：
@@ -519,7 +510,6 @@ V2.2
 
 > **免费开源，禁止倒卖。**
 
-当前 V2.4.1 安装版运行过程中也会显示对应水印。
 
 ---
 
