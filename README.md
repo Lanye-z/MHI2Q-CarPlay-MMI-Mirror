@@ -4,8 +4,6 @@
 
 本项目面向 Audi **MHI2Q** 平台，用于将 MMI 中控画面实时镜像至 **Virtual Cockpit** 的地图显示区域，并通过 Green Engineering Menu / Toolbox 完成安装、启动、停止、更新、日志收集和卸载恢复。
 
-当前 **main** 已完成实车验证，作为当前推荐稳定版本。
-
 > [!WARNING]
 > **⚠️ 写在前面**
 >本项目此前在测试阶段曾被个别人未经允许拿去包装、倒卖。免费分享的测试成果被拿去牟利，是本项目停止继续公开开发的主要原因之一。
@@ -27,7 +25,9 @@
 
 https://github.com/user-attachments/assets/54a7e453-c473-428b-8cbe-08c460c59622
 
+<img width="1707" height="1280" alt="1fcb77abdb31026899b34a0c393d8056" src="https://github.com/user-attachments/assets/6098f5b9-f08b-40c0-a651-03676b7703d6" />
 
+<img width="1707" height="1280" alt="131ec8d28840b205975e61d9b2784842" src="https://github.com/user-attachments/assets/033f645f-8a3b-4886-95b6-6a272c62e9ac" />
 
 当前版本主要特性：
 
