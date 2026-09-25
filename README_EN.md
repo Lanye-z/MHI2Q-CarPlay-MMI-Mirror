@@ -8,6 +8,8 @@ This project is designed for the Audi **MHI2Q** platform. It mirrors the MMI cen
 > **Sister project: CarPlay AltScreen**  
 > If you want to display the **native CarPlay secondary display / AltScreen navigation view** instead of mirroring the MMI center display, see:  
 > **[MHI2Q-CarPlay-AltScreen](https://github.com/yuedizhibo/MHI2Q-CarPlay-AltScreen)**
+> <img width="1920" height="1080" alt="5fbd618e0dce8e95eb87c703956df850" src="https://github.com/user-attachments/assets/4ab9b5a0-7ef2-4011-b965-e944b7395e78" />
+
 
 > [!WARNING]
 > **⚠️ A note before you start**
