@@ -27,7 +27,7 @@ script
 
 script
    value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/rescue_carplay_rgi.sh"
-   label   "RESCUE - Force Restore Stock CarPlay / Remove RGI [CN Firmware Only]"
+   label   "RESCUE - Force Restore Stock CarPlay / Remove RGI"
 
 script
    value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/collect_carplay_rgi_logs.sh"

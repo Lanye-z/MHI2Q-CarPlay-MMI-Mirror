@@ -1,0 +1,6 @@
+# MMI Mirror V2.4.1 branded QNX ARMv7 release manifest.
+# Native binary embeds the MMI-destination splash and runtime “免费开源，禁止倒卖” watermark.
+# Unified JAR and RGI98 renderer remain inherited from the vehicle-tested V2.3 build.
+ee48454507b24ed1cb1f72c1f8ee5202e16e2b58dd045c64a594a3dec0c5d1d5  mmi-mirror-display
+f96a7fff4c767b51e9292926eb474e762b0e7119de4c1d65d3d4961eba6647fe  carplay_hook-unified.jar
+0ef8a2a70e0aa02f595598960f35d82257f7367eb99acf37566327038c5a9cd8  maneuver_render-rgi98

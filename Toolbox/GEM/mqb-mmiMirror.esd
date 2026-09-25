@@ -1,7 +1,7 @@
 ###########################################################################################
 #
 # Custom Green Engineering Menu screen
-# MMI Mirror V2.2 / JAVA80 composite validation
+# MMI Mirror V2.4 / four-edge crop + CarPlay MAIN_SCREEN automatic lifecycle
 #
 ###########################################################################################
 #
@@ -12,47 +12,68 @@ screen "MMI Mirror" Customization
 
 keyValue
     value   String sys 0x00000000 0
-    label   "Audi MHI2Q MMI Mirror V2.2 / Unified Cluster"
+    label   "Audi MHI2Q MMI Mirror V2.4 / Crop Layout + Auto Lifecycle"
     poll    0
 
 keyValue
     value   String sys 0x00000000 0
-    label   "JAVA80: ctx80 = {98,101,102,3}; Native displayable 3 only"
+    label   "JAVA80: ctx80={98,101,102,3}; idle/release=ctx74; ctx72=bounce only"
     poll    0
 
 keyValue
     value   String sys 0x00000000 0
-    label   "Luka-style context lock + Layout/View observer diagnostics"
+    label   "V2.4: 4-edge source crop; SCALE/OFFSET after crop; overflow clipped"
+    poll    0
+
+keyValue
+    value   String sys 0x00000000 0
+    label   "CarPlay MAIN_SCREEN DEVICE=Mirror ON; MAINUNIT=Mirror OFF"
     poll    0
 
 script
    value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/install_mmi_mirror.sh"
-   label   "Install/Update MMI Mirror V2.2"
+   label   "Install/Update MMI Mirror V2.4"
+
+script
+   value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/install_mmi_mirror_config.sh"
+   label   "Install/Update custom display config"
+
+script
+   value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/reset_mmi_mirror_config.sh"
+   label   "Reset custom display config to defaults"
+
+script
+   value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/start_mmi_mirror_auto.sh"
+   label   "Start V2.4 Auto Lifecycle (test first)"
+
+script
+   value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/stop_mmi_mirror_auto.sh"
+   label   "Stop V2.4 Auto Lifecycle"
+
+script
+   value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/enable_mmi_mirror_autorun.sh"
+   label   "Enable V2.4 Boot Autorun"
+
+script
+   value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/disable_mmi_mirror_autorun.sh"
+   label   "Disable V2.4 Boot Autorun"
 
 script
    value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/start_mmi_mirror_toolbox.sh"
-   label   "Start MMI Mirror V2.2"
+   label   "Manual Start BaseVideo (diagnostic)"
 
 script
    value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/stop_mmi_mirror_toolbox.sh"
-   label   "Stop MMI Mirror V2.2"
-
-script
-   value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/autostart_mmi_mirror_on.sh"
-   label   "AutoStart ON - start after MMI boot"
-
-script
-   value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/autostart_mmi_mirror_off.sh"
-   label   "AutoStart OFF - manual start only"
+   label   "Manual Stop BaseVideo"
 
 script
    value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/collect_mmi_mirror_logs.sh"
-   label   "Copy V2.2 diagnostics to SD-card"
+   label   "Copy V2.4 diagnostics to SD-card"
 
 script
    value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/clear_mmi_mirror_logs.sh"
    label   "Clear temporary MMI Mirror logs"
 
 script
-   value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/uninstall_mmi_mirror.sh"
-   label   "Restore/Uninstall MMI Mirror V2.2"
+   value   sys 1 0x0100 "/eso/hmi/engdefs/scripts/mqb/uninstall_mmi_mirror_v23.sh"
+   label   "Restore/Uninstall MMI Mirror V2.4"

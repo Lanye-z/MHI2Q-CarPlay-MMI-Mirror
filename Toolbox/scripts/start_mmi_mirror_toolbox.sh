@@ -1,6 +1,6 @@
 #!/bin/sh
 # Start the installed MMI Mirror V2.2 runtime without SSH.
-# Shared entry point for the Green Menu action and the optional boot AutoStart runner.
+# Manual start remains intentional; no OEM startup file is modified.
 
 export PATH=/proc/boot:/bin:/usr/bin:/usr/sbin:/sbin:/mnt/app/armle/bin:/mnt/app/armle/usr/bin:$PATH
 

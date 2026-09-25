@@ -6,8 +6,10 @@
 
 export PATH=/proc/boot:/bin:/usr/bin:/usr/sbin:/sbin:/mnt/app/media/gracenote/bin:/mnt/app/armle/bin:/mnt/app/armle/sbin:/mnt/app/armle/usr/bin:/mnt/app/armle/usr/sbin:$PATH
 
-if [ "$_" = "/bin/on" ]; then BASE="$0"; else BASE="$_"; fi
-SCRIPTDIR=$( cd -P -- "$(dirname -- "$(command -v -- "$BASE")")" && pwd -P )
+# Toolbox installs this script at a canonical location. Do not infer the path from
+# $_: when this script is launched through another /bin/sh wrapper, QNX may expose
+# /bin/sh there and resolve the helper path as ./bin.
+SCRIPTDIR="/eso/hmi/engdefs/scripts/mqb"
 
 . "${SCRIPTDIR}/util_info.sh"
 . "${SCRIPTDIR}/util_mountsd.sh"
@@ -36,10 +38,6 @@ JAR_TXN_DIR="${BACKUPFOLDER}/.carplay_hook_jar_transaction"
 RGI_RENDERER_TXN_DIR="${BACKUPFOLDER}/.rgi_renderer_transaction"
 ACTIVE_MARKER="/tmp/mmi-mirror-active"
 READY_MARKER="/tmp/mmi-mirror-basevideo.ready"
-AUTOSTART_MARKER="${SCRIPTDIR}/.mmi_mirror_autostart"
-AUTOSTART_SCRIPT="${SCRIPTDIR}/autostart_mmi_mirror_off.sh"
-AUTOSTART_BEGIN="# MMI MIRROR V2.2 AUTOSTART BEGIN"
-STARTUP="/etc/boot/startup.sh"
 
 exec 3>&1
 mkdir -p "${BACKUPFOLDER}" || exit 1
@@ -118,39 +116,6 @@ count_rgi_native_payloads() {
     echo "${COUNT}"
 }
 
-disable_autostart() {
-    HAS_BLOCK=0
-    [ -f "${STARTUP}" ] && grep -qF "${AUTOSTART_BEGIN}" "${STARTUP}" 2>/dev/null && HAS_BLOCK=1
-    if [ ! -f "${AUTOSTART_MARKER}" ] && [ "${HAS_BLOCK}" -eq 0 ]; then
-        return 0
-    fi
-
-    if [ -f "${AUTOSTART_SCRIPT}" ]; then
-        /bin/sh "${AUTOSTART_SCRIPT}"
-        return $?
-    fi
-
-    # Fallback for an incomplete Toolbox update where the OFF helper is absent.
-    mount -uw /mnt/app 2>/dev/null || return 1
-    rm -f "${AUTOSTART_MARKER}" || {
-        mount -ur /mnt/app 2>/dev/null
-        return 1
-    }
-    sync
-    mount -ur /mnt/app 2>/dev/null || return 1
-
-    if [ "${HAS_BLOCK}" -eq 1 ]; then
-        mount -uw /mnt/system 2>/dev/null || return 1
-        sed -i '/# MMI MIRROR V2.2 AUTOSTART BEGIN/,/# MMI MIRROR V2.2 AUTOSTART END/d' "${STARTUP}" || {
-            mount -ur /mnt/system 2>/dev/null
-            return 1
-        }
-        sync
-        mount -ur /mnt/system 2>/dev/null || return 1
-    fi
-    return 0
-}
-
 trap 'fail "Uninstall interrupted by signal"' 1 2 15
 
 log "===== MMI Mirror V2.2 / JAVA80 uninstall started ====="
@@ -159,9 +124,6 @@ log "FAZIT: ${FAZIT}"
 log "Runtime target: ${APP_TARGET}"
 log "JAR target: ${JAR_TARGET}"
 log "Stable RGI recovery source: ${VOLUME}/Toolbox/apps/carplay-rgi"
-
-log "Disabling the persistent MMI Mirror AutoStart hook, if present"
-disable_autostart || fail "Could not completely remove the MMI Mirror AutoStart state"
 
 # Stop BaseVideo while the installed runtime scripts still exist. If RGI currently
 # presents a frame, Java may intentionally keep ctx80 owned until RGI ends/reboot.
@@ -259,7 +221,6 @@ else
 fi
 log "RGI libcarplay_hook.so, flag_atlas.rgba, GEM/scripts and JSON configuration were not removed."
 log "IMPORTANT: reboot/HMI restart is REQUIRED before using RGI again; the currently loaded Unified JAR/renderer process may persist until restart."
-log "Persistent AutoStart marker and startup.sh hook were removed."
 log "Runtime logs in /tmp were intentionally retained for collection until reboot/clear."
 log "Uninstall log: Backup/${VERSION}/MMIMirror/uninstall_mmi_mirror.log"
 log "===== MMI Mirror V2.2 / JAVA80 uninstall finished ====="

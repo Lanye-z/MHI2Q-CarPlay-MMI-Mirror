@@ -1,0 +1,6 @@
+# MMI Mirror V2.4 diagnostic artifact manifest.
+# The Native binary includes observational capture/upload/draw/swap/work timing diagnostics.
+# Unified JAR and RGI98 renderer remain inherited from the vehicle-tested V2.3 build.
+96a75a9716e3c228b385c5bbe6f7c990d0578783d1a8cfac9350fccce7b7abbb  mmi-mirror-display
+f96a7fff4c767b51e9292926eb474e762b0e7119de4c1d65d3d4961eba6647fe  carplay_hook-unified.jar
+0ef8a2a70e0aa02f595598960f35d82257f7367eb99acf37566327038c5a9cd8  maneuver_render-rgi98

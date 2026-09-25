@@ -1,6 +1,0 @@
-build/
-*.o
-*.log
-config.local
-.DS_Store
-Thumbs.db

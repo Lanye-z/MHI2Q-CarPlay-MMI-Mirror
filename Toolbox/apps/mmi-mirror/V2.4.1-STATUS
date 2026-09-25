@@ -1,0 +1,17 @@
+Branch=v2.4.1
+BaseBranch=v2.4-crop-layout
+SourceStatus=READY
+SourceBinarySync=YES
+QNXBuild=PASS
+SplashGeometry=MIRROR_DESTINATION
+RuntimeWatermarkMotion=BOUNCING_DRIFT
+RuntimeWatermarkBounds=VISIBLE_MIRROR_INTERSECTION
+BrandSplash=EMBEDDED
+RuntimeWatermark=YES
+RuntimeWatermarkText=免费开源，禁止倒卖
+ReleaseHardening=HIDDEN_VISIBILITY_STRIPPED_LINK
+NativeStatus=READY
+PackagedNative=V2.4.1
+InstallStatus=VEHICLE_VERIFIED_READY
+VehicleStatus=VEHICLE_VERIFIED
+PromotionStatus=COMPLETE

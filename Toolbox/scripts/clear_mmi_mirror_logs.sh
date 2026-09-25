@@ -1,7 +1,7 @@
 #!/bin/sh
 # Clear only disposable MMI Mirror logs and installer/launcher self-test leftovers.
-# Active controller/HMI/BaseVideo lifecycle files are intentionally retained;
-# use Stop to withdraw BaseVideo ownership instead of this diagnostic cleanup action.
+# Active controller/HMI/BaseVideo/CarPlay/supervisor lifecycle state is retained;
+# use the matching Stop action to withdraw ownership/processes instead.
 
 RESULT=0
 for f in \
@@ -9,8 +9,9 @@ for f in \
     /tmp/mmi-mirror-display.log.1 \
     /tmp/mmi-mirror-controller.log \
     /tmp/mmi-mirror-controller.log.1 \
-    /tmp/mmi-mirror-autostart.log \
-    /tmp/mmi-mirror-autostart-bootstrap.log \
+    /tmp/mmi-mirror-supervisor.log \
+    /tmp/mmi-mirror-supervisor.log.1 \
+    /tmp/mmi-mirror-supervisor-boot.log \
     /tmp/mmi-mirror-install-selftest.log \
     /tmp/mmi-mirror-launcher-selftest-bin.sh \
     /tmp/mmi-mirror-launcher-selftest.log \
@@ -23,8 +24,8 @@ do
 done
 
 if [ "${RESULT}" -eq 0 ]; then
-    echo "Temporary MMI Mirror logs cleared; runtime state preserved."
+    echo "Temporary MMI Mirror V2.3 logs cleared; runtime/CarPlay lifecycle state preserved."
 else
-    echo "WARNING: some temporary MMI Mirror logs could not be removed."
+    echo "WARNING: some temporary MMI Mirror V2.3 logs could not be removed."
 fi
 exit "${RESULT}"
