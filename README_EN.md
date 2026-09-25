@@ -4,6 +4,11 @@
 
 This project is designed for the Audi **MHI2Q** platform. It mirrors the MMI center display in real time to the map area of the **Virtual Cockpit**, with installation, start/stop control, updates, diagnostics, and uninstall/recovery integrated into the Green Engineering Menu / Toolbox.
 
+> [!NOTE]
+> **Sister project: CarPlay AltScreen**  
+> If you want to display the **native CarPlay secondary display / AltScreen navigation view** instead of mirroring the MMI center display, see:  
+> **[MHI2Q-CarPlay-AltScreen](https://github.com/yuedizhibo/MHI2Q-CarPlay-AltScreen)**
+
 > [!WARNING]
 > **⚠️ A note before you start**
 >
