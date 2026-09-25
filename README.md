@@ -4,6 +4,11 @@
 
 本项目面向 Audi **MHI2Q** 平台，用于将 MMI 中控画面实时镜像至 **Virtual Cockpit** 的地图显示区域，并通过 Green Engineering Menu / Toolbox 完成安装、启动、停止、更新、日志收集和卸载恢复。
 
+> [!NOTE]
+> **姊妹项目：CarPlay AltScreen**  
+> 如果你希望显示的不是 MMI 中控画面镜像，而是 **CarPlay 原生第二屏 / AltScreen 导航画面**，请前往：  
+> **[MHI2Q-CarPlay-AltScreen](https://github.com/yuedizhibo/MHI2Q-CarPlay-AltScreen)**
+
 > [!WARNING]
 > **⚠️ 写在前面**
 > 
