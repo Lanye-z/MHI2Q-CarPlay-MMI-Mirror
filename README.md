@@ -1,6 +1,6 @@
 # MIB2 Toolbox — MMI Mirror V2.4.1
 
-简体中文
+[English](README_EN.md) | **简体中文**
 
 本项目面向 Audi **MHI2Q** 平台，用于将 MMI 中控画面实时镜像至 **Virtual Cockpit** 的地图显示区域，并通过 Green Engineering Menu / Toolbox 完成安装、启动、停止、更新、日志收集和卸载恢复。
 
@@ -344,9 +344,9 @@ Stop MMI Mirror
 AutoStart ON - start after MMI boot
 ~~~
 
-开启开机自动启动。
+开启自动启动模式。
 
-AutoStart 会在 MMI 启动后等待必要运行环境就绪，再调用 MMI Mirror 启动流程。
+AutoStart 会在车机运行环境就绪后等待 **CarPlay 启动并进入可用状态**；检测到 CarPlay 激活后，才会自动启动 MMI Mirror。它不是“车机一开机就立即启动镜像”。
 
 开启 AutoStart 后，日常正常使用不需要持续插入 SD 卡。
 
@@ -358,7 +358,7 @@ AutoStart OFF - manual start only
 
 需要注意：
 
-AutoStart OFF 只是**从下一次开机开始禁止自动启动**。
+AutoStart OFF 会关闭后续的 CarPlay 自动触发启动。
 
 如果当前 MMI Mirror 已经运行，它不会自动停止当前会话。如需立即停止，请另外执行：
 
