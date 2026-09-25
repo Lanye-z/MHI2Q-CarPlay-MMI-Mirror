@@ -8,6 +8,8 @@
 > **姊妹项目：CarPlay AltScreen**  
 > 如果你希望显示的不是 MMI 中控画面镜像，而是 **CarPlay 原生第二屏 / AltScreen 导航画面**，请前往：  
 > **[MHI2Q-CarPlay-AltScreen](https://github.com/yuedizhibo/MHI2Q-CarPlay-AltScreen)**
+> <img width="1920" height="1080" alt="5fbd618e0dce8e95eb87c703956df850" src="https://github.com/user-attachments/assets/b63f590d-ee7d-4ef9-bca6-6c75e71fce31" />
+
 
 > [!WARNING]
 > **⚠️ 写在前面**
