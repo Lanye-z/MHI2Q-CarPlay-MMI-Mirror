@@ -1,0 +1,250 @@
+//--------------------------------------
+//--- 010 Editor v14.0 Binary Template
+//
+// File:        res.bt
+// Author:      Jille
+// Revision:    2
+// Purpose:     Parse VW/Seat/Cupra MIB infotainment ".res" translation
+//              (I18d / I18n) resource files. Companion template for the
+//              MIB translations (.res) editor app (mqbtools app_res /
+//              the "/res" route).
+//
+// Colorcoding: Blue/Purple = header, Yellow = string table, Red/Orange =
+//              trailing index section (Aqua = the special "master" group
+//              0 of I18n files), Gray = fields that are fixed constants.
+//
+// --- Format summary --------------------------------------------------
+//
+// [0x00-0x27] 40-byte fixed header (see RESHEADER below)
+// [0x28  ...] String table: header.stringCount entries, back-to-back,
+//             NO padding and NO separate terminator between entries -
+//             each entry is exactly (8 + charCount*2) bytes.
+// [   ...EOF] Index section: repeating (type, count, ids[count]) groups
+//             that continue, tightly packed, to the very end of the file.
+//             There is no offset/pointer table anywhere in the file; both
+//             the string table and the index section are located purely
+//             by walking forward from the previous region.
+//
+// --- File classes ------------------------------------------------------
+//
+// magic "I18n" (combined): one file per locale containing the full string
+//   catalog. Fixed topology: 333 index groups. Group 0 is the "master"
+//   group - its idCount always equals header.fixedValue1, and it acts as
+//   a flat id-usage table (heavy repetition, not a per-screen category).
+//   The remaining 332 groups (== header.fixedValue2) are ordinary. Every
+//   id in every group is a LOCAL string-table index in
+//   [0, header.stringCount-1]; I18n files are fully self-contained.
+//
+// magic "I18d" (delta/dictionary): a locale ships as a "-0" and "-1" pair
+//   of smaller delta files layered on a shared base catalog. Fixed
+//   topology: 11 index groups per file, with id-count signature
+//   (290, 290, 8, 5, 5, 4, 5, 12, 7, 7, 4). Ids split into two classes:
+//   below header.stringCount they reference this file's own strings;
+//   at/above header.stringCount they reference a shared/global id space
+//   (belonging to the base catalog, not present in this file) with a
+//   fixed ceiling of 5987. Groups 1-2 (0-based) are byte-identical
+//   between a locale's "-0" and "-1" file; groups 3+ differ per bundle.
+//
+// --- Notes on the string entry format -----------------------------------
+//
+// Each entry is:
+//     uint32 unknown0   (always 0)
+//     uint32 charCount  (UTF-16 code units, NOT bytes)
+//     wchar_t text[charCount]   (UTF-16LE, tightly packed, no terminator)
+// There is no padding gap and no null terminator stored on disk.
+//
+// Header field +0x24 is named stringCount here (not "max string ID"):
+// it is the exact count of string-table entries that follow, i.e. the
+// loop bound, not a sparse maximum id.
+//
+//--------------------------------------
+
+LittleEndian();
+
+//======================================================================
+// Header (40 bytes, 0x00-0x27)
+//======================================================================
+typedef struct {
+    uint32  resourceCount   <bgcolor=cLtBlue,   format=decimal, comment="resourceCount == trailing-index-group-count + 2. The '+2' counts the header block and the string table block as two implicit extra resources.">;
+    uint32  versionMajor    <bgcolor=cLtBlue,   format=decimal, comment="Observed constant: 5">;
+    uint32  versionMinor    <bgcolor=cLtBlue,   format=decimal, comment="Observed constant: 5">;
+    char    magic[4]        <bgcolor=cLtPurple, comment="\"I18d\" (dictionary/delta) or \"I18n\" (full/combined)">;
+    uint32  schemaMagic         <bgcolor=cPurple,   format=hex, comment="Fixed catalog constant 0x0FE3B907. Algorithm unknown; not a per-file content checksum.">;
+    uint32  reserved        <bgcolor=cGray,     format=hex, comment="Always 0x00000000.">;
+    uint32  fixedValue1     <bgcolor=cGray,     format=decimal, comment="Fixed catalog constant 6584 (0x19B8). Equals the idCount of INDEXGROUP #0 (the 'master' group) in every I18n file. Not a byte offset. Not meaningful for I18d files.">;
+    uint32  fixedValue2     <bgcolor=cGray,     format=decimal, comment="Fixed catalog constant 332 (0x14C). Equals the number of ordinary index groups following the master group in I18n files (total groups - 1). Not a byte offset.">;
+    uint32  unknownFlag     <bgcolor=cLtBlue,   format=decimal, comment="Constant 1. Semantics unknown.">;
+    uint32  stringCount     <bgcolor=cBlue,     format=decimal, comment="Number of string-table entries that follow.">;
+} RESHEADER <bgcolor=cLtBlue>;
+
+//======================================================================
+// String table entry (variable length)
+//   uint32 unknown0   - always 0
+//   uint32 charCount  - length of text[], in UTF-16 code units (not bytes)
+//   wchar_t text[charCount] - UTF-16LE, tightly packed, no terminator,
+//                              no padding before the next entry
+//======================================================================
+typedef struct {
+    uint32 unknown0  <bgcolor=cGray, format=decimal, comment="Always 0">;
+    uint32 charCount <bgcolor=cDkYellow, format=decimal, comment="String length in UTF-16 code units">;
+    if (charCount > 0)
+        wchar_t text[charCount] <bgcolor=cYellow>;
+} STRINGENTRY <read=ReadSTRINGENTRY, optimize=false>;
+
+string ReadSTRINGENTRY(STRINGENTRY &s) {
+    local string out;
+    local string txt;
+
+    if (s.charCount == 0)
+        return "<empty string>";
+
+    txt = ReadWString(startof(s.text), s.charCount);
+    if (Strlen(txt) > 60)
+        txt = SubStr(txt, 0, 57) + "...";
+
+    SPrintf(out, "[%d] \"%s\"", s.charCount, txt);
+    return out;
+}
+
+//======================================================================
+// Index section entry (repeats until EOF)
+//   uint32 groupType - always 5. No other marker/tag field exists in the
+//                       index section; a group's only identity is its
+//                       ordinal position in the walk order.
+//   uint32 idCount
+//   uint32 ids[idCount] - string-table indices. In I18n files these are
+//                       always local (0..header.stringCount-1); in I18d
+//                       files they split between local (own new/overridden
+//                       strings) and shared/global (>= stringCount,
+//                       referencing a base catalog this delta file does
+//                       not itself contain - fixed ceiling 5987).
+//
+// g_groupIndex / g_masterGroupSeen / g_localIdTotal / g_sharedIdTotal are
+// running globals (declared below, before the parse loop) used purely for
+// the Printf summary at the end of the file - they are not part of the
+// on-disk format.
+//======================================================================
+typedef struct {
+    uint32 groupType <bgcolor=cLtRed, format=decimal, comment="Constant: 5">;
+    uint32 idCount   <bgcolor=cLtRed, format=decimal>;
+    // Recolor the id list itself (not the type/count header) so the
+    // special "master" group of I18n files - the one whose idCount matches
+    // header.fixedValue1 (6584) - stands out visually as Aqua instead of
+    // the usual Dark-Red used for every other group's id list.
+    if (idCount > 0 && idCount == header.fixedValue1)
+        SetBackColor(cAqua);
+    else
+        SetBackColor(cDkRed);
+    if (idCount > 0)
+        uint32 ids[idCount] <format=decimal>;
+} INDEXGROUP <read=ReadINDEXGROUP, optimize=false>;
+
+string ReadINDEXGROUP(INDEXGROUP &g) {
+    local string out;
+    local int i;
+    local int localN = 0;
+    local int sharedN = 0;
+    local int isMaster;
+
+    g_groupIndex++;
+    isMaster = (g.idCount > 0 && g.idCount == header.fixedValue1);
+    if (isMaster)
+        g_masterGroupSeen = 1;
+
+    if (g.idCount == 0) {
+        SPrintf(out, "Group #%d type=5: <empty>", g_groupIndex);
+        return out;
+    }
+
+    for (i = 0; i < g.idCount; i++) {
+        if (g.ids[i] < header.stringCount)
+            localN++;
+        else
+            sharedN++;
+    }
+    g_localIdTotal += localN;
+    g_sharedIdTotal += sharedN;
+
+    if (isMaster) {
+        SPrintf(out, "Group #%d [MASTER, matches header.fixedValue1=%d]: %d id(s), range [%d..%d], %d local / %d shared",
+            g_groupIndex, header.fixedValue1, g.idCount, g.ids[0], g.ids[g.idCount - 1], localN, sharedN);
+    } else if (sharedN == 0) {
+        SPrintf(out, "Group #%d: %d id(s), range [%d..%d], all local",
+            g_groupIndex, g.idCount, g.ids[0], g.ids[g.idCount - 1]);
+    } else if (localN == 0) {
+        SPrintf(out, "Group #%d: %d id(s), range [%d..%d], all shared/global (>= stringCount)",
+            g_groupIndex, g.idCount, g.ids[0], g.ids[g.idCount - 1]);
+    } else {
+        SPrintf(out, "Group #%d: %d id(s), range [%d..%d], %d local / %d shared",
+            g_groupIndex, g.idCount, g.ids[0], g.ids[g.idCount - 1], localN, sharedN);
+    }
+    return out;
+}
+
+string TagToStr(char tag[4]) {
+    local string s;
+    SPrintf(s, "%c%c%c%c", tag[0], tag[1], tag[2], tag[3]);
+    return s;
+}
+
+//======================================================================
+// File body
+//======================================================================
+RESHEADER header;
+
+local string magicStr = TagToStr(header.magic);
+
+if (header.versionMajor != 5 || header.versionMinor != 5)
+    Warning("res.bt: unexpected version %d.%d - template verified against version 5.5 only, continuing best-effort", header.versionMajor, header.versionMinor);
+if (!(magicStr == "I18d" || magicStr == "I18n"))
+    Warning("res.bt: unexpected magic \"%s\" (expected \"I18d\" or \"I18n\") - continuing best-effort", magicStr);
+
+// These header fields are fixed catalog-wide constants; a mismatch means
+// either a new/unseen file variant or a parsing bug.
+if (header.schemaMagic != 0x0FE3B907)
+    Warning("res.bt: schemaMagic 0x%08X differs from the expected constant 0x0FE3B907 - new/unseen file variant?", header.schemaMagic);
+if (header.fixedValue1 != 6584)
+    Warning("res.bt: fixedValue1 %d differs from the expected constant 6584 - new/unseen catalog build?", header.fixedValue1);
+if (header.fixedValue2 != 332)
+    Warning("res.bt: fixedValue2 %d differs from the expected constant 332 - new/unseen catalog build?", header.fixedValue2);
+
+if (magicStr == "I18d")
+    Printf("Resource file type: I18d (dictionary/delta)\n");
+else if (magicStr == "I18n")
+    Printf("Resource file type: I18n (full/combined)\n");
+
+if (header.stringCount > 0)
+    STRINGENTRY entries[header.stringCount] <optimize=false>;
+
+// Index section: tightly packed (type, count, ids[count]) groups from
+// here to end of file. No offset table precedes it - it is located
+// purely by walking past the string table.
+local int g_groupIndex = -1;
+local int g_masterGroupSeen = 0;
+local int g_localIdTotal = 0;
+local int g_sharedIdTotal = 0;
+while (!FEof()) {
+    INDEXGROUP group;
+}
+local int groupCount = g_groupIndex + 1;
+
+//--------------------------------------
+// Summary
+//--------------------------------------
+Printf("\n[res.bt] Header resourceCount field   : %d\n", header.resourceCount);
+Printf("[res.bt] String table entries          : %d\n", header.stringCount);
+Printf("[res.bt] Trailing index groups         : %d\n", groupCount);
+Printf("[res.bt] resourceCount == groups+2     : %s (%d vs %d)\n",
+    (header.resourceCount == groupCount + 2) ? "yes" : "NO - MISMATCH",
+    header.resourceCount, groupCount + 2);
+Printf("[res.bt] Master group (I18n only) seen : %s\n", g_masterGroupSeen ? "yes" : "no (expected for I18d files)");
+Printf("[res.bt] Total local id references     : %d\n", g_localIdTotal);
+Printf("[res.bt] Total shared/global references: %d\n", g_sharedIdTotal);
+if (magicStr == "I18n" && g_sharedIdTotal != 0)
+    Printf("[res.bt] NOTE: I18n files are expected to be fully self-contained (0 shared refs) - this file deviates.\n");
+if (magicStr == "I18d" && groupCount != 11)
+    Printf("[res.bt] NOTE: I18d files have a fixed 11-group topology - this file deviates (has %d groups).\n", groupCount);
+if (magicStr == "I18n" && groupCount != 333)
+    Printf("[res.bt] NOTE: I18n files have a fixed 333-group topology - this file deviates (has %d groups).\n", groupCount);
+Printf("[res.bt] File size                     : %d bytes\n", FileSize());
+Printf("[res.bt] Parse reached EOF cleanly      : %s\n", FEof() ? "yes" : "NO - MISMATCH");
