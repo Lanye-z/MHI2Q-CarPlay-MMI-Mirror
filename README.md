@@ -75,52 +75,67 @@ Toolbox/apps/mmi-mirror/V2.4.1-SHA256SUMS
 
 下载本仓库 **main** 分支 ZIP 并解压。
 
-将以下内容放到 SD 卡根目录：
+### 完整 Toolbox 安装介质
+
+如果这张 SD 卡用于 **首次安装 Toolbox**，或者你希望保留原版 MIB2 High Toolbox 菜单中所有需要 SD 卡资源的功能，建议直接保留仓库中的完整 Toolbox 配套结构，不要只复制 `Toolbox/`：
+
+~~~text
+SD CARD
+├── metainfo2.txt
+├── Toolbox/
+├── Custom/
+├── Modifications/
+├── FAQ.md
+├── Tools/          # 电脑端辅助工具，车机运行本身不依赖
+└── Research/       # 研究/参考资料，车机运行本身不依赖
+~~~
+
+其中真正会被车机端 Toolbox 脚本直接引用的主要是：
+
+~~~text
+Toolbox/
+Custom/
+Modifications/
+metainfo2.txt
+~~~
+
+`Custom/` 提供 GreenMenu、FEC、LSD、语言、皮肤、启动图、VNC 等功能使用的 SD 卡目录与默认资源；`Modifications/` 中包含部分原版 Toolbox 菜单直接引用的 payload。此前 V2.4.1 的 install-only 精简包删除了这些目录，会出现“菜单还在，但执行对应安装功能时找不到 SD 卡文件”的情况。
+
+### 已经安装过 Toolbox，只更新 MMI Mirror
+
+如果车机已经正常安装并能够进入 MQBCoding Toolbox，仅更新本项目的 MMI Mirror 时，最小更新内容仍然可以是：
 
 ~~~text
 metainfo2.txt
 Toolbox/
 ~~~
 
-正确结构示例：
+但使用这种最小介质时，原版 Toolbox 中依赖 `Custom/` 或 `Modifications/` 的其他安装功能不会具备完整 SD 卡资源。
+
+不要额外套一层仓库目录。例如下面这种结构是错误的：
 
 ~~~text
 SD CARD
-├── metainfo2.txt
-└── Toolbox
-    ├── GEM
-    ├── apps
-    ├── final
-    └── scripts
-~~~
-
-不要额外套一层仓库目录。
-
-例如下面这种结构是错误的：
-
-~~~text
-SD CARD
-└── MHI2Q-CarPlay-RGI-MMI-Mirror-main
+└── MHI2Q-CarPlay-MMI-Mirror-main
     ├── metainfo2.txt
-    └── Toolbox
+    ├── Toolbox/
+    ├── Custom/
+    └── Modifications/
 ~~~
+
+> [!NOTE]
+> 对于**从未安装过 MIB2 High Toolbox** 的车机，是否能从 Software Update / SWDL 直接完成首次部署还取决于具体固件对 metainfo 签名、variant 和 region 的接受情况。当前 `Toolbox/`、`metainfo2.txt` 和首次安装脚本与 jilleb/mib2-toolbox 上游一致；如果在进入 Toolbox 之前就出现 signature、variant conflict、无法读取 release info 或 Error 137，这不是缺少 `Custom/` 导致的。不同固件可能需要与本车匹配的上游首次安装方式，本仓库不会内置一个假定可用于所有固件/地区的通用 donor 包。
 
 ---
 
 # 安装与使用
 
-## 1. 更新 Toolbox
+## 1. 安装 / 更新 Toolbox
 
-将本仓库中的：
+- **首次准备完整 Toolbox SD 卡**：保留 `metainfo2.txt`、`Toolbox/`、`Custom/`、`Modifications/`；建议直接使用本仓库完整根目录结构。
+- **车机已经装过 Toolbox，仅更新 MMI Mirror**：复制 `metainfo2.txt` 与 `Toolbox/` 即可完成本项目菜单、脚本和运行文件更新；如还要使用原版 Toolbox 的其他安装功能，同时保留 `Custom/` 与 `Modifications/`。
 
-~~~text
-metainfo2.txt
-Toolbox/
-~~~
-
-复制到 Toolbox SD 卡根目录。
-
-按照 MIB2 High Toolbox 的正常更新方式，让车机加载新的 GEM 菜单、脚本和运行文件。
+按照 MIB2 High Toolbox 的正常安装 / 更新方式，让车机加载新的 GEM 菜单、脚本和运行文件。
 
 Toolbox 更新完成后，建议：
 
