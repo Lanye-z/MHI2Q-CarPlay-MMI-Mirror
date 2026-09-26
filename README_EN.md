@@ -71,52 +71,67 @@ Toolbox/apps/mmi-mirror/V2.4.1-SHA256SUMS
 
 Download the ZIP of the **main** branch and extract it.
 
-Place the following items in the root directory of the SD card:
+### Complete Toolbox installation media
+
+If the SD card is intended for a **first-time Toolbox installation**, or if you want the original MIB2 High Toolbox functions that load resources from the SD card to remain usable, keep the complete Toolbox support structure instead of copying only `Toolbox/`:
+
+~~~text
+SD CARD
+├── metainfo2.txt
+├── Toolbox/
+├── Custom/
+├── Modifications/
+├── FAQ.md
+├── Tools/          # PC-side helper tools; not required by the head unit runtime
+└── Research/       # research/reference material; not required by the head unit runtime
+~~~
+
+The main paths referenced directly by on-unit Toolbox scripts are:
+
+~~~text
+Toolbox/
+Custom/
+Modifications/
+metainfo2.txt
+~~~
+
+`Custom/` provides the SD-card folders and default resources used by GreenMenu, FEC, LSD, language, skin, splash-screen, VNC and related functions. `Modifications/` contains payloads referenced by some original Toolbox menu actions. The earlier V2.4.1 install-only package removed these directories, which could leave a menu and script present while the resource it tries to install is missing from the SD card.
+
+### Toolbox already installed; MMI Mirror update only
+
+If MQBCoding Toolbox is already installed and working on the head unit, the minimum media for updating this project's MMI Mirror can still be:
 
 ~~~text
 metainfo2.txt
 Toolbox/
 ~~~
 
-Correct structure:
+With this minimal media, however, other original Toolbox functions that depend on `Custom/` or `Modifications/` will not have their complete SD-card resources.
 
-~~~text
-SD CARD
-├── metainfo2.txt
-└── Toolbox
-    ├── GEM
-    ├── apps
-    ├── final
-    └── scripts
-~~~
-
-Do not keep the repository folder as an extra parent directory.
-
-For example, this is incorrect:
+Do not keep the repository folder as an extra parent directory. For example, this is incorrect:
 
 ~~~text
 SD CARD
 └── MHI2Q-CarPlay-MMI-Mirror-main
     ├── metainfo2.txt
-    └── Toolbox
+    ├── Toolbox/
+    ├── Custom/
+    └── Modifications/
 ~~~
+
+> [!NOTE]
+> On a head unit that has **never had MIB2 High Toolbox installed**, first-time deployment through Software Update / SWDL also depends on how that firmware validates metainfo signatures, variants, and regions. The current `Toolbox/`, `metainfo2.txt`, and core first-install scripts match the jilleb/mib2-toolbox upstream. If the process fails before Toolbox is installed with a signature error, variant conflict, release-info error, or Error 137, that is not caused by the missing `Custom/` directory. Some firmware versions require an upstream first-install method matched to that unit; this repository does not bundle a supposedly universal donor package for every firmware and region.
 
 ---
 
 # Installation and usage
 
-## 1. Update Toolbox
+## 1. Install / update Toolbox
 
-Copy:
+- **Preparing a complete Toolbox SD card for first-time use:** keep `metainfo2.txt`, `Toolbox/`, `Custom/`, and `Modifications/`; using the complete repository root layout is recommended.
+- **Toolbox is already installed and you only need to update MMI Mirror:** `metainfo2.txt` and `Toolbox/` are sufficient for this project's menus, scripts, and runtime files. Keep `Custom/` and `Modifications/` as well if you want the other original Toolbox install functions to remain fully usable from the same SD card.
 
-~~~text
-metainfo2.txt
-Toolbox/
-~~~
-
-to the root of your Toolbox SD card.
-
-Use the normal MIB2 High Toolbox update procedure so that the head unit loads the new GEM menus, scripts, and runtime files.
+Use the normal MIB2 High Toolbox installation / update procedure so that the head unit loads the new GEM menus, scripts, and runtime files.
 
 After the Toolbox update is complete, it is recommended to:
 
