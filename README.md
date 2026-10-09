@@ -47,18 +47,20 @@ https://github.com/user-attachments/assets/54a7e453-c473-428b-8cbe-08c460c59622
 - 支持 **Full / Small** 地图区域变化。
 - 根据不同仪表状态动态调整镜像显示区域。
 - 支持源画面 Crop、Scale、Offset 与自然边缘裁切。
-- Classic / Sport、Full / Small 切换后，水印活动区域会随新的镜像位置和裁切区域重新计算。
+- 保留约 3 秒开机 Logo，取消可见的运行水印；其余镜像与布局逻辑保持原版 V2.4.1。
 - 支持手动启动 / 停止。
 - 支持 AutoStart 自动启动：当 CarPlay 启动并进入可用状态后，MMI Mirror 会自动启动镜像
 - 支持旧版本直接覆盖更新。
 - 支持日志收集和完整卸载。
+
+**版本说明：** 当前 Native 为从已实车验证的 V2.4.1 进行的**仅运行水印图像数据透明化补丁**。开机 Logo、程序代码段及其他资源保持不变，补丁后的版本尚未实车复测，使用前请备份并按升级指南验证。
 
 当前 Native：
 
 ~~~text
 mmi-mirror-display
 SHA256:
-ee48454507b24ed1cb1f72c1f8ee5202e16e2b58dd045c64a594a3dec0c5d1d5
+27dc33941146e2b3775569b8aefc7b344dd1815c390b43eb24d0349d6ddf7135
 ~~~
 
 包内可通过：

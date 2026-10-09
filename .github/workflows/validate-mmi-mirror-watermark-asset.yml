@@ -1,0 +1,33 @@
+name: Validate MMI Mirror transparent runtime watermark
+
+on:
+  push:
+    branches:
+      - main
+      - fix/no-runtime-watermark-keep-splash
+    paths:
+      - 'Toolbox/apps/mmi-mirror/**'
+      - '.github/workflows/validate-mmi-mirror-watermark-asset.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-native:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check only runtime watermark asset changes
+        run: python3 Toolbox/apps/mmi-mirror/tests/validate_transparent_watermark.py
+      - name: Verify release manifest
+        run: |
+          cd Toolbox/apps/mmi-mirror
+          sha256sum -c V2.4.1-SHA256SUMS
+      - name: Validate unchanged installation scripts
+        run: |
+          sh -n Toolbox/scripts/install_mmi_mirror.sh
+          sh -n Toolbox/scripts/uninstall_mmi_mirror.sh
+          sh -n Toolbox/apps/mmi-mirror/scripts/start_mmi_mirror.sh

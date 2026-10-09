@@ -2,7 +2,7 @@
 
 ## V2.4.1 package status
 
-V2.4.1 继承 V2.4 主体镜像逻辑；启动 Logo 跟随 MMI mirror destination，运行水印为“免费开源，禁止倒卖”并在可见镜像区域内动态漂移。QNX 6.5 ARMv7 binary 已重新编译并同步，且已完成实车验证（`VehicleStatus=VEHICLE_VERIFIED`）。当前作为推荐稳定版本。详见 `V2.4.1-STATUS` 与 `V2.4.1-SHA256SUMS`。
+当前公开版以**实车验证过的 V2.4.1** 为基础，只将内嵌的运行水印 alpha 图像替换为完全透明图像（不重新编译，不修改机器指令）；**约 3 秒开机 Logo 保持原样**，包括启动时序和首帧处理。新补丁已完成数据级静态检查，但尚未实车复测；原版 V2.4.1 的实车验证记录不等于新补丁的实车验证。详见 `V2.4.1-STATUS` 和 `V2.4.1-SHA256SUMS`。
 
 下文描述 V2.4 crop-layout 基线；当前 `v2.4.1` 在此基础上同步品牌资源与重新构建的 QNX Native binary。
 
@@ -227,12 +227,12 @@ Reset custom display config to defaults
 
 ## 7. Current artifact / install status
 
-当前 V2.4.1 Native 已重新编译、同步并完成实车验证：
+当前公开版仅对原始已验证 Native 的运行水印图像数据做透明化替换，并更新校验：
 
 ```text
 Size:     105187
-SHA256:   EE48454507B24ED1CB1F72C1F8EE5202E16E2B58DD045C64A594A3DEC0C5D1D5
-Git blob: 46f9f45a0585777142a9ba50627f12485d4689d7
+SHA256:   27DC33941146E2B3775569B8AEFC7B344DD1815C390B43EB24D0349D6DDF7135
+Git blob: 24e895bbf2d04e209fa327a9b0a1f57811a222b2
 ```
 
 状态文件：
@@ -244,18 +244,18 @@ Toolbox/apps/mmi-mirror/V2.4-STATUS
 当前状态：
 
 ```text
-CandidatePhase=VEHICLE_VERIFIED
+CandidatePhase=ASSET_PATCH_STATIC_VERIFIED
 NativeStatus=READY
 SourceBinarySync=YES
 QNXBuild=PASS
 UnifiedJarStatus=INHERITED_V2.3_UNCHANGED
 RGI98Status=INHERITED_V2.3_UNCHANGED
 LifecycleStatus=INHERITED_V2.3_UNCHANGED
-VehicleStatus=VEHICLE_VERIFIED
-InstallStatus=VEHICLE_VERIFIED_READY
+VehicleStatus=PENDING_RETEST
+InstallStatus=READY_FOR_VEHICLE_TEST
 ```
 
-也就是说：**V2.4.1 当前源码、QNX artifact、安装包与实车验证状态已经闭环，可作为推荐稳定安装版本。**
+说明：**原始 V2.4.1 已实车验证；本次无可见运行水印的 Native 只完成静态验证，尚需实车复测。**
 
 ## 8. Verification summary
 
@@ -268,5 +268,5 @@ V2.4 four-edge source crop         BUILT / CI VERIFIED
 V2.4 literal destination offsets   BUILT / CI VERIFIED
 V2.4 natural GL overflow clipping  BUILT / CI VERIFIED
 V2.4 stage timing diagnostics      BUILT / CI VERIFIED
-V2.4.1 vehicle validation          VERIFIED
+V2.4.1 original vehicle validation VERIFIED; transparent-runtime-watermark patch NOT YET RETESTED
 ```

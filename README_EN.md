@@ -45,18 +45,20 @@ Current features:
 - Supports **Full / Small** map-area changes.
 - Dynamically adjusts the mirror display region according to the current cluster state.
 - Supports source Crop, Scale, Offset, and natural edge clipping.
-- When switching between Classic / Sport or Full / Small layouts, the watermark movement area is recalculated based on the new mirror position and visible cropped region.
+- Retains the ~3-second startup logo while making the runtime watermark fully transparent; all original mirror/layout logic remains unchanged.
 - Supports manual start / stop.
 - Supports AutoStart: when CarPlay starts and becomes available, MMI Mirror starts automatically.
 - Supports direct in-place updates from older versions.
 - Supports diagnostics and complete uninstall.
+
+**Build note:** This binary differs from the vehicle-verified V2.4.1 only in the embedded runtime watermark image data, which was replaced with fully transparent alpha. The startup logo and executable code are unchanged. This patched binary has **not yet been vehicle retested**; keep the original backup and verify before daily use.
 
 Current native binary:
 
 ~~~text
 mmi-mirror-display
 SHA256:
-ee48454507b24ed1cb1f72c1f8ee5202e16e2b58dd045c64a594a3dec0c5d1d5
+27dc33941146e2b3775569b8aefc7b344dd1815c390b43eb24d0349d6ddf7135
 ~~~
 
 You can also verify the package using:
