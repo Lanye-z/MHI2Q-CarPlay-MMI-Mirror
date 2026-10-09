@@ -5,7 +5,7 @@ import hashlib
 import pathlib
 import subprocess
 
-ROOT = pathlib.Path(__file__).resolve().parents[3]
+ROOT = pathlib.Path(__file__).resolve().parents[4]
 FILE = "Toolbox/apps/mmi-mirror/mmi-mirror-display"
 data = (ROOT / FILE).read_bytes()
 original = subprocess.check_output(["git", "show", "bf0b99f1d26f3f69b0ba490ca0e9793be9b64bb1:" + FILE], cwd=ROOT)
